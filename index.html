@@ -4,181 +4,93 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#45271d">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Aur.é Gestão">
 <link rel="manifest" href="manifest.webmanifest">
 <title>Aur.é Gestão</title>
 <style>
-:root{--brown:#45271d;--brown2:#76584d;--cream:#fbf8f5;--pale:#efe5df;--line:#dfd2ca;--ink:#382820;--white:#fff}
-*{box-sizing:border-box}body{margin:0;background:#f6f1ed;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-header{background:var(--brown);color:white;padding:calc(16px + env(safe-area-inset-top)) 18px 16px;position:sticky;top:0;z-index:5}
-.brand{font:32px Georgia,serif;letter-spacing:-1px}.sub{font-size:10px;letter-spacing:2px;color:#eadbd2;margin-top:2px}
-main{max-width:760px;margin:auto;padding:16px 14px 100px}
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:4px 0 16px}
-.stat{background:white;border:1px solid var(--line);border-radius:15px;padding:14px}
-.stat small{display:block;color:var(--brown2);font-size:12px}.stat strong{font-size:22px;color:var(--brown);display:block;margin-top:5px}
-nav{display:flex;gap:7px;overflow:auto;padding:5px 0 14px}
-nav button,.filter button{border:1px solid var(--line);background:white;color:var(--brown);border-radius:999px;padding:10px 14px;font-weight:600;white-space:nowrap}
-nav button.active,.primary{background:var(--brown);color:white;border-color:var(--brown)}
-h2{font:22px Georgia,serif;color:var(--brown);margin:8px 0 14px}
-.card{background:white;border:1px solid var(--line);border-radius:16px;padding:15px;margin:10px 0}
-label{display:block;font-size:12px;font-weight:700;color:var(--brown2);margin:11px 0 5px}
-input,textarea,select{width:100%;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);font:16px inherit}
-textarea{min-height:75px;resize:vertical}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-button{font:inherit;cursor:pointer}
-.action{border:0;border-radius:11px;padding:12px 15px;font-weight:700}
-.primary{width:100%;margin-top:15px}
-.secondary{background:var(--pale);color:var(--brown);border:1px solid var(--line);border-radius:10px;padding:9px 12px}
-.order-title{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
-.order-title b{font-size:16px}.muted{font-size:12px;color:#866f63}
-.pills{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}
-.pill{background:var(--pale);color:var(--brown);padding:5px 9px;border-radius:99px;font-size:11px;font-weight:700}
-.checkrow{display:flex;gap:9px;align-items:center;padding:7px 0;font-size:14px}
-.checkrow input{width:18px;height:18px;accent-color:var(--brown)}
-.itemline{display:flex;gap:7px;margin:7px 0}.itemline input{flex:1}
-.photo-preview{width:100%;max-height:220px;object-fit:contain;background:var(--cream);border-radius:12px;margin-top:8px}
-.empty{text-align:center;padding:30px 16px;color:#866f63}
-.hidden{display:none!important}
-footer{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);padding:9px 14px calc(9px + env(safe-area-inset-bottom));display:flex;justify-content:center;z-index:5}
-footer button{max-width:740px;width:100%}
-.smallbtn{border:0;background:transparent;color:#8b5141;padding:7px;font-size:12px}
-.filter{display:flex;gap:6px;overflow:auto;margin:8px 0 12px}.filter button{font-size:12px;padding:8px 11px}
-#toast{position:fixed;bottom:85px;left:50%;transform:translateX(-50%);background:var(--brown);color:white;padding:11px 16px;border-radius:99px;font-size:13px;display:none;z-index:9}
-@media(min-width:650px){main{padding-top:22px}.stats{grid-template-columns:repeat(4,1fr)}}
+:root{--brown:#45271d;--brown2:#76584d;--cream:#f7f1eb;--paper:#fffdfa;--line:#e8dcd2;--pink:#ead5d0;--green:#526b55;--red:#a64b42}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--brown);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+header{background:var(--brown);color:white;padding:22px 18px 18px;position:sticky;top:0;z-index:5}
+.brand{font:34px Georgia,serif;letter-spacing:1px}.sub{font-size:11px;letter-spacing:3px;color:#d7c5bb;margin-top:5px}
+main{max-width:850px;margin:auto;padding:16px}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:15px}
+.stat,.panel,.order{background:var(--paper);border:1px solid var(--line);border-radius:17px;padding:15px}
+.stat small{display:block;color:var(--brown2);font-size:12px}.stat strong{font-size:21px;display:block;margin-top:5px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+button,.btn{border:0;border-radius:12px;padding:12px 15px;background:var(--brown);color:white;font-weight:650;font-size:14px}
+button.secondary{background:#eadfd7;color:var(--brown)}button.danger{background:#f5e4e1;color:var(--red)}
+h2{font:24px Georgia,serif;margin:4px 0 14px}h3{font-size:15px;margin:16px 0 8px}
+label{display:block;font-size:13px;font-weight:650;margin:12px 0 6px}
+input,select,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:11px;background:white;color:#33231e;font:16px inherit}
+textarea{min-height:80px;resize:vertical}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.total{background:#f1e7df;border-radius:12px;padding:14px;margin-top:12px;display:flex;justify-content:space-between;font-weight:700}
+.hidden{display:none!important}.order{margin:10px 0}.orderhead{display:flex;justify-content:space-between;gap:10px}.muted{color:var(--brown2);font-size:12px}.pill{background:#efe4dc;padding:5px 9px;border-radius:20px;font-size:11px;white-space:nowrap}
+.order img{max-width:100%;max-height:180px;object-fit:contain;border-radius:10px;margin-top:10px}
+hr{border:0;border-top:1px solid var(--line);margin:15px 0}
+#notice{font-size:13px;color:var(--green);margin:8px 0}.toolbar{display:flex;gap:8px}.toolbar input{flex:1}
+.photoPreview{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.photoPreview img{width:90px;height:90px;object-fit:cover;border-radius:10px}
+.small{font-size:12px;color:var(--brown2)}
+@media(max-width:480px){.grid{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}main{padding:12px}}
 </style>
 </head>
 <body>
-<header><div class="brand">aur.é</div><div class="sub">GESTÃO • CONTROLE DE PEDIDOS</div></header>
+<header><div class="brand">aur.é</div><div class="sub">GESTÃO · CONTROLE DE PEDIDOS</div></header>
 <main>
-<section id="dashboard">
+<section id="home">
  <div class="stats">
-  <div class="stat"><small>Pedidos ativos</small><strong id="sActive">0</strong><span class="muted">Ainda não entregues</span></div>
-  <div class="stat"><small>Total em pedidos</small><strong id="sTotal">R$ 0,00</strong></div>
-  <div class="stat"><small>A receber</small><strong id="sDue">R$ 0,00</strong></div>
-  <div class="stat"><small>Entregas pendentes</small><strong id="sDeliver">0</strong></div>
+  <div class="stat"><small>Pedidos ativos</small><strong id="activeCount">0</strong></div>
+  <div class="stat"><small>Total em pedidos</small><strong id="ordersTotal">R$ 0,00</strong></div>
+  <div class="stat"><small>Já recebido</small><strong id="receivedTotal">R$ 0,00</strong></div>
+  <div class="stat"><small>A receber</small><strong id="toReceive">R$ 0,00</strong></div>
  </div>
+ <div class="actions"><button id="newBtn">＋ Novo pedido</button><button class="secondary" id="exportBtn">Backup</button><button class="secondary" id="importBtn">Importar backup</button><input id="importFile" class="hidden" type="file" accept="application/json"></div>
+ <div class="toolbar"><input id="search" placeholder="Buscar cliente ou produto"><select id="filter"><option value="all">Todos</option><option value="active">Em andamento</option><option value="done">Entregues</option></select></div>
+ <div id="orders"></div>
 </section>
-<nav>
- <button class="active" data-tab="orders">Pedidos</button>
- <button data-tab="new">+ Novo pedido</button>
- <button data-tab="materials">Compras</button>
- <button data-tab="backup">Backup</button>
-</nav>
-<section id="orders">
- <h2>Seus pedidos</h2>
- <div class="filter">
-  <button data-filter="all">Todos</button><button data-filter="open">Em andamento</button><button data-filter="unpaid">Não pagos</button><button data-filter="done">Entregues</button>
- </div>
- <div id="orderList"></div>
-</section>
-<section id="new" class="hidden">
+<section id="editor" class="panel hidden">
  <h2 id="formTitle">Novo pedido</h2>
- <form id="orderForm" class="card">
-  <input type="hidden" id="editId">
-  <label>Cliente *</label><input id="client" required placeholder="Nome do cliente">
-  <label>Pedido / produto *</label><textarea id="product" required placeholder="Descreva o que foi encomendado"></textarea>
-  <div class="grid2">
-   <div><label>Quantidade *</label><input id="qty" type="number" min="1" value="1" required></div>
-   <div><label>Valor unitário (R$) *</label><input id="unitPrice" type="number" min="0" step="0.01" required placeholder="0,00"></div>
-  </div>
-  <div class="card" style="background:var(--cream);margin:10px 0;padding:14px">
-   <span class="muted">Valor total do pedido</span>
-   <div id="totalPreview" style="font-size:1.45rem;font-weight:700;color:var(--brown)">R$ 0,00</div>
-   <small class="muted">Quantidade × valor unitário</small>
-  </div>
-  <label>Prazo de entrega *</label><input id="deadline" type="date" required>
-  <label>Foto de referência / produto finalizado</label><input id="photo" type="file" accept="image/*">
-  <img id="photoPreview" class="photo-preview hidden" alt="Prévia da foto">
-  <label>Itens que precisa comprar</label>
-  <div id="materialsInput"></div>
-  <button type="button" class="secondary" id="addMaterial">+ Adicionar material</button>
-  <div class="grid2">
-   <div><label>Pagamento</label><select id="paymentStatus"><option value="none">Não pago</option><option value="partial">Parcial</option><option value="full">Total</option></select></div>
-   <div><label>Entrega</label><select id="delivered"><option value="false">Pendente</option><option value="true">Entregue</option></select></div>
-  </div>
-  <div id="partialPaymentBox" class="hidden"><label>Valor já recebido (R$)</label><input id="amountPaid" type="number" min="0" step="0.01" placeholder="0,00"><small class="muted">Esse valor será abatido automaticamente do total a receber.</small></div>
+ <form id="orderForm">
+  <input type="hidden" id="orderId">
+  <label>Cliente</label><input id="client" required placeholder="Nome do cliente">
+  <label>Produto / pedido</label><input id="product" required placeholder="O que será produzido?">
+  <div class="grid"><div><label>Quantidade</label><input id="qty" type="number" min="1" step="1" value="1" required></div><div><label>Valor unitário (R$)</label><input id="unit" type="number" min="0" step="0.01" value="0" required></div></div>
+  <div class="total"><span>Total do pedido</span><span id="total">R$ 0,00</span></div>
+  <div class="grid"><div><label>Prazo</label><input id="deadline" type="date"></div><div><label>Entrega</label><select id="delivery"><option value="Pendente">Pendente</option><option value="Entregue">Entregue</option></select></div></div>
+  <h3>Pagamento</h3>
+  <label>Status do pagamento</label><select id="payment"><option value="Não pago">Não pago</option><option value="Parcial">Parcial</option><option value="Total">Total</option></select>
+  <div id="receivedWrap" class="hidden"><label>Valor já recebido (R$)</label><input id="received" type="number" min="0" step="0.01" value="0"></div>
+  <div class="total"><span>Saldo a receber</span><span id="balance">R$ 0,00</span></div>
+  <h3>Foto de referência / produto final</h3>
+  <label>Escolher foto do telefone</label><input id="photos" type="file" accept="image/*" multiple>
+  <div class="small">As fotos são guardadas no próprio aparelho, sem redução intencional da qualidade. Fotos muito grandes podem atingir o limite de armazenamento do navegador; o pedido será salvo mesmo se uma foto falhar.</div>
+  <div id="photoPreview" class="photoPreview"></div>
+  <h3>Materiais para comprar / utilizar</h3>
+  <div id="materials"></div><div class="actions"><button type="button" class="secondary" id="addMaterial">＋ Adicionar material</button></div>
   <label>Observações</label><textarea id="notes" placeholder="Detalhes, cores, personalização..."></textarea>
-  <button class="action primary" type="submit">Salvar pedido</button>
-  <button type="button" class="smallbtn hidden" id="cancelEdit">Cancelar edição</button>
+  <div id="notice" role="status"></div>
+  <div class="actions"><button type="submit" id="saveBtn">Salvar pedido</button><button type="button" class="secondary" id="cancelBtn">Cancelar</button></div>
  </form>
 </section>
-<section id="materials" class="hidden">
- <h2>Lista de compras</h2><p class="muted">Materiais pendentes de todos os pedidos.</p>
- <div id="shoppingList"></div>
-</section>
-<section id="backup" class="hidden">
- <h2>Backup dos dados</h2>
- <div class="card">
-  <p>Exporte uma cópia dos seus pedidos e fotos para guardar em segurança ou importar em outro dispositivo.</p>
-  <button class="action primary" id="exportBtn">Exportar backup</button>
-  <label>Restaurar backup JSON</label><input type="file" id="importFile" accept="application/json">
-  <p class="muted">Os dados ficam armazenados neste navegador/dispositivo. Faça backups regulares.</p>
- </div>
-</section>
 </main>
-<footer><button class="action primary" id="quickNew">+ Cadastrar pedido</button></footer>
-<div id="toast"></div>
 <script>
-const DB='aure-gestao-db', STORE='orders';
-let db, orders=[], currentFilter='all', photoData=null, tempMaterials=[];
-const $=id=>document.getElementById(id);
-const money=v=>(Number(v)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-function toast(t){$('toast').textContent=t;$('toast').style.display='block';setTimeout(()=>$('toast').style.display='none',2300)}
-function openDB(){return new Promise((res,rej)=>{let r=indexedDB.open(DB,1);r.onupgradeneeded=()=>r.result.createObjectStore(STORE,{keyPath:'id'});r.onsuccess=()=>{db=r.result;res()};r.onerror=()=>rej(r.error)})}
-function all(){return new Promise((res,rej)=>{let r=db.transaction(STORE).objectStore(STORE).getAll();r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
-function put(o){return new Promise((res,rej)=>{let r=db.transaction(STORE,'readwrite').objectStore(STORE).put(o);r.onsuccess=res;r.onerror=()=>rej(r.error)})}
-function del(id){return new Promise((res,rej)=>{let r=db.transaction(STORE,'readwrite').objectStore(STORE).delete(id);r.onsuccess=res;r.onerror=()=>rej(r.error)})}
-async function refresh(){orders=await all();render()}
-function render(){
- $('sActive').textContent=orders.filter(o=>!o.delivered).length;
- $('sTotal').textContent=money(orders.reduce((a,o)=>a+Number(o.price),0));
- $('sDue').textContent=money(orders.reduce((a,o)=>a+Math.max(0,Number(o.price||0)-received(o)),0));
- $('sDeliver').textContent=orders.filter(o=>!o.delivered).length;
- let list=orders.filter(o=>currentFilter==='all'||(currentFilter==='open'&&!o.delivered)||(currentFilter==='unpaid'&&!o.paid)||(currentFilter==='done'&&o.delivered)).sort((a,b)=>a.deadline.localeCompare(b.deadline));
- $('orderList').innerHTML=list.length?list.map(o=>`<article class="card">
- <div class="order-title"><div><b>${esc(o.client)}</b><div class="muted">${esc(o.product)}</div></div><b>${money(o.price)}</b></div>
- <div class="pills"><span class="pill">Qtd: ${o.qty}</span>${o.unitPrice!==undefined?`<span class="pill">Unit.: ${money(o.unitPrice)}</span>`:''}<span class="pill">Prazo: ${dateBR(o.deadline)}</span><span class="pill">${paymentLabel(o)}</span>${received(o)>0?`<span class="pill">Recebido: ${money(received(o))}</span><span class="pill">Falta: ${money(Math.max(0,Number(o.price)-received(o)))}</span>`:''}<span class="pill">${o.delivered?'Entregue':'Pendente'}</span></div>
- ${o.photo?`<img class="photo-preview" src="${o.photo}" alt="Foto do pedido">`:''}
- ${o.materials?.length?`<div><b>Materiais</b>${o.materials.map((m,i)=>`<label class="checkrow"><input type="checkbox" data-mat="${o.id}:${i}" ${m.done?'checked':''}>${esc(m.name)}</label>`).join('')}</div>`:''}
- ${o.notes?`<p class="muted">${esc(o.notes)}</p>`:''}
- <div class="grid2"><button class="secondary" data-paid="${o.id}">${received(o)>=Number(o.price)?'Pagamento total':'Quitar restante'}</button><button class="secondary" data-delivered="${o.id}">${o.delivered?'Reabrir entrega':'Marcar entregue'}</button></div>
- <div class="grid2"><button class="secondary" data-edit="${o.id}">Editar</button><button class="smallbtn" data-delete="${o.id}">Excluir</button></div>
- </article>`).join(''):'<div class="card empty">Nenhum pedido cadastrado ainda.<br>Toque em “Cadastrar pedido” para começar.</div>';
- let mats=[];orders.forEach(o=>(o.materials||[]).forEach((m,i)=>{if(!m.done)mats.push({...m,client:o.client,oid:o.id,idx:i})}));
- $('shoppingList').innerHTML=mats.length?mats.map(m=>`<div class="card checkrow"><input type="checkbox" data-mat="${m.oid}:${m.idx}"><div><b>${esc(m.name)}</b><div class="muted">Pedido de ${esc(m.client)}</div></div></div>`).join(''):'<div class="card empty">Tudo comprado! Nenhum material pendente.</div>';
-}
-function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function dateBR(s){if(!s)return '—';let [y,m,d]=s.split('-');return `${d}/${m}/${y}`}
-function tab(name){document.querySelectorAll('main>section[id]').forEach(s=>{if(s.id==='dashboard')s.classList.remove('hidden');else s.classList.toggle('hidden',s.id!==name)});document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));$('quickNew').classList.toggle('hidden',name==='new');}
-function addMatRow(value=''){let div=document.createElement('div');div.className='itemline';div.innerHTML=`<input placeholder="Ex.: papel fotográfico, filamento..." value="${esc(value)}"><button type="button" class="secondary">×</button>`;div.querySelector('button').onclick=()=>div.remove();$('materialsInput').append(div)}
-function resetForm(){ $('orderForm').reset();$('editId').value='';$('qty').value=1;$('unitPrice').value='';$('paymentStatus').value='none';$('amountPaid').value='0.00';togglePartialPayment();updateTotal();$('materialsInput').innerHTML='';tempMaterials=[];photoData=null;$('photoPreview').classList.add('hidden');$('formTitle').textContent='Novo pedido';$('cancelEdit').classList.add('hidden')}
-function edit(o){resetForm();$('editId').value=o.id;$('client').value=o.client;$('product').value=o.product;$('qty').value=o.qty;$('unitPrice').value=(o.unitPrice!==undefined?o.unitPrice:(Number(o.price)||0)/(Number(o.qty)||1)).toFixed(2);updateTotal();$('deadline').value=o.deadline;$('paymentStatus').value=received(o)>=(Number(o.price)||0)&&Number(o.price)>0?'full':received(o)>0?'partial':'none';$('amountPaid').value=received(o).toFixed(2);togglePartialPayment();$('delivered').value=String(o.delivered);$('notes').value=o.notes||'';photoData=o.photo||null;if(photoData){$('photoPreview').src=photoData;$('photoPreview').classList.remove('hidden')} (o.materials||[]).forEach(m=>{addMatRow(m.name);});tempMaterials=o.materials||[];$('formTitle').textContent='Editar pedido';$('cancelEdit').classList.remove('hidden');tab('new')}
-$('photo').addEventListener('change',async e=>{let f=e.target.files[0];if(!f)return;try{photoData=await compressImage(f);$('photoPreview').src=photoData;$('photoPreview').classList.remove('hidden')}catch(err){alert('Não consegui carregar essa foto. Tente escolher outra imagem.');e.target.value=''}});
-function compressImage(file){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onerror=reject;reader.onload=()=>{const img=new Image();img.onerror=reject;img.onload=()=>{const max=1400,scale=Math.min(1,max/Math.max(img.width,img.height));const c=document.createElement('canvas');c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);c.getContext('2d').drawImage(img,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',0.78))};img.src=reader.result};reader.readAsDataURL(file)})}
-function updateTotal(){const q=Math.max(0,Number($('qty').value)||0),u=Math.max(0,Number($('unitPrice').value)||0);$('totalPreview').textContent=money(q*u)}
-$('qty').addEventListener('input',updateTotal);$('unitPrice').addEventListener('input',updateTotal);
-function togglePartialPayment(){const st=$('paymentStatus').value;$('partialPaymentBox').classList.toggle('hidden',st!=='partial');if(st==='full')$('amountPaid').value=(Math.max(0,Number($('qty').value)||0)*Math.max(0,Number($('unitPrice').value)||0)).toFixed(2);if(st==='none')$('amountPaid').value='0.00'}
-$('paymentStatus').addEventListener('change',togglePartialPayment);
-$('addMaterial').onclick=()=>addMatRow();
-$('cancelEdit').onclick=()=>{resetForm();tab('orders')};
-$('orderForm').onsubmit=async e=>{e.preventDefault();const saveBtn=$('orderForm').querySelector('button[type=submit]');saveBtn.disabled=true;saveBtn.textContent='Salvando...';try{let id=$('editId').value||crypto.randomUUID();let old=orders.find(o=>o.id===id);let names=[...$('materialsInput').querySelectorAll('input')].map(i=>i.value.trim()).filter(Boolean);let materials=names.map(n=>{let prev=(old?.materials||[]).find(m=>m.name===n);return {name:n,done:prev?.done||false}});let qty=Number($('qty').value),unitPrice=Number($('unitPrice').value);await put({id,client:$('client').value.trim(),product:$('product').value.trim(),qty,unitPrice,price:qty*unitPrice,deadline:$('deadline').value,paid:$('paymentStatus').value==='full',paymentStatus:$('paymentStatus').value,amountPaid:Math.min(qty*unitPrice,Math.max(0,Number($('amountPaid').value)||0)),delivered:$('delivered').value==='true',photo:photoData,materials,notes:$('notes').value,updated:new Date().toISOString()});await refresh();resetForm();tab('orders');toast('Pedido salvo com sucesso!');requestAnimationFrame(()=>window.scrollTo({top:0,behavior:'smooth'}))}catch(err){console.error(err);alert('Não foi possível salvar este pedido. Seus dados do formulário continuam na tela. Se houver foto, tente uma imagem menor. Faça um backup dos pedidos que já aparecem no sistema.')}finally{saveBtn.disabled=false;saveBtn.textContent='Salvar pedido'}};
-document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>tab(b.dataset.tab));
-$('quickNew').onclick=()=>{resetForm();tab('new')};
-document.querySelectorAll('[data-filter]').forEach(b=>b.onclick=()=>{currentFilter=b.dataset.filter;render()});
-document.addEventListener('click',async e=>{
- let t=e.target.closest('[data-paid],[data-delivered],[data-edit],[data-delete]');if(!t)return;
- let id=t.dataset.paid||t.dataset.delivered||t.dataset.edit||t.dataset.delete;let o=orders.find(x=>x.id===id);if(!o)return;
- if(t.dataset.paid){o.amountPaid=Number(o.price)||0;o.paid=true;o.paymentStatus='full';await put(o);await refresh();toast('Pagamento quitado')}
- if(t.dataset.delivered){o.delivered=!o.delivered;await put(o);await refresh()}
- if(t.dataset.edit)edit(o);
- if(t.dataset.delete&&confirm('Excluir este pedido?')){await del(id);await refresh();toast('Pedido excluído')}
-});
-document.addEventListener('change',async e=>{if(!e.target.matches('[data-mat]'))return;let [id,idx]=e.target.dataset.mat.split(':');let o=orders.find(x=>x.id===id);if(!o)return;o.materials[Number(idx)].done=e.target.checked;await put(o);await refresh()});
-$('exportBtn').onclick=async()=>{let data=await all();let blob=new Blob([JSON.stringify(data)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='backup-aure-gestao.json';a.click();URL.revokeObjectURL(a.href)};
-$('importFile').onchange=async e=>{let f=e.target.files[0];if(!f)return;try{let data=JSON.parse(await f.text());if(!Array.isArray(data))throw 0;for(let o of data)await put(o);await refresh();toast('Backup restaurado')}catch{alert('Arquivo de backup inválido.')}};
-openDB().then(refresh).catch(()=>alert('Não foi possível abrir o armazenamento local. Use Safari ou Chrome atualizados.'));
-if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+const DB='aure-gestao-db-v2', STORE='orders'; let db, currentPhotos=[], materialRows=[];
+const $=id=>document.getElementById(id), money=n=>(Number(n)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+function openDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(STORE))r.result.createObjectStore(STORE,{keyPath:'id'})};r.onsuccess=()=>{db=r.result;resolve()};r.onerror=()=>reject(r.error)})}
+function all(){return new Promise((res,rej)=>{const r=db.transaction(STORE).objectStore(STORE).getAll();r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+function save(o){return new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).put(o);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})}
+function remove(id){return new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).delete(id);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})}
+function calc(){let t=(+$('qty').value||0)*(+$('unit').value||0);$('total').textContent=money(t);let rec=$('payment').value==='Total'?t:$('payment').value==='Parcial'?(+$('received').value||0):0; $('receivedWrap').classList.toggle('hidden',$('payment').value!=='Parcial');$('balance').textContent=money(Math.max(0,t-rec));}
+function materialInput(v=''){const d=document.createElement('div');d.className='grid';d.style.marginBottom='7px';d.innerHTML='<input placeholder="Material" value=""><button type="button" class="danger">Remover</button>';d.querySelector('input').value=v;d.querySelector('button').onclick=()=>d.remove();$('materials').append(d)}
+function showEditor(o){$('home').classList.add('hidden');$('editor').classList.remove('hidden');$('orderForm').reset();$('orderId').value=o?.id||'';$('formTitle').textContent=o?'Editar pedido':'Novo pedido';$('client').value=o?.client||'';$('product').value=o?.product||'';$('qty').value=o?.qty||1;$('unit').value=o?.unit||0;$('deadline').value=o?.deadline||'';$('delivery').value=o?.delivery||'Pendente';$('payment').value=o?.payment||'Não pago';$('received').value=o?.received||0;$('notes').value=o?.notes||'';currentPhotos=o?.photos||[];materialRows=o?.materials||[];$('materials').innerHTML='';materialRows.forEach(materialInput);$('photoPreview').innerHTML='';currentPhotos.forEach(p=>preview(p));calc();window.scrollTo(0,0)}
+function preview(blob){const u=URL.createObjectURL(blob);const img=document.createElement('img');img.src=u;$('photoPreview').append(img)}
+async function render(){const data=await all();let total=0,rec=0,bal=0,active=0;data.forEach(o=>{let t=o.qty*o.unit, r=o.payment==='Total'?t:o.payment==='Parcial'?o.received:0;total+=t;rec+=r;bal+=Math.max(0,t-r);if(o.delivery!=='Entregue')active++});$('activeCount').textContent=active;$('ordersTotal').textContent=money(total);$('receivedTotal').textContent=money(rec);$('toReceive').textContent=money(bal);let q=$('search').value.toLowerCase(),f=$('filter').value;$('orders').innerHTML='';data.filter(o=>(f==='all'||(f==='active'?o.delivery!=='Entregue':o.delivery==='Entregue'))&&(`${o.client} ${o.product}`).toLowerCase().includes(q)).sort((a,b)=>b.created-a.created).forEach(o=>{let t=o.qty*o.unit,r=o.payment==='Total'?t:o.payment==='Parcial'?o.received:0;let div=document.createElement('div');div.className='order';let title=document.createElement('div');title.className='orderhead';title.innerHTML=`<div><strong>${esc(o.client)}</strong><div class="muted">${esc(o.product)} · ${o.qty} un.</div></div><span class="pill">${esc(o.payment)}</span>`;div.append(title);let info=document.createElement('p');info.textContent=`Total ${money(t)} · Recebido ${money(r)} · Falta ${money(Math.max(0,t-r))}`;div.append(info);let meta=document.createElement('div');meta.className='muted';meta.textContent=`Prazo: ${o.deadline||'Não definido'} · ${o.delivery}`;div.append(meta);(o.photos||[]).slice(0,2).forEach(p=>{let im=document.createElement('img');im.src=URL.createObjectURL(p);div.append(im)});let acts=document.createElement('div');acts.className='actions';let edit=document.createElement('button');edit.textContent='Editar';edit.onclick=()=>showEditor(o);let del=document.createElement('button');del.textContent='Excluir';del.className='danger';del.onclick=async()=>{if(confirm('Excluir este pedido?')){await remove(o.id);render()}};acts.append(edit,del);div.append(acts);$('orders').append(div)})}
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+['qty','unit','received','payment'].forEach(id=>$(id).addEventListener('input',calc));$('payment').addEventListener('change',calc);
+$('newBtn').onclick=()=>showEditor();$('cancelBtn').onclick=()=>{$('editor').classList.add('hidden');$('home').classList.remove('hidden')};
+$('addMaterial').onclick=()=>materialInput();$('search').oninput=render;$('filter').onchange=render;
+$('photos').onchange=e=>{for(const f of e.target.files){if(f.type.startsWith('image/')){currentPhotos.push(f);preview(f)}}e.target.value=''};
+$('orderForm').onsubmit=async e=>{e.preventDefault();$('saveBtn').disabled=true;$('saveBtn').textContent='Salvando...';$('notice').textContent='';try{const id=$('orderId').value||crypto.randomUUID();const o={id,client:$('client').value.trim(),product:$('product').value.trim(),qty:+$('qty').value,unit:+$('unit').value,deadline:$('deadline').value,delivery:$('delivery').value,payment:$('payment').value,received:$('payment').value==='Parcial'?Math.min((+$('received').value||0), (+$('qty').value)*(+$('unit').value)):0,notes:$('notes').value,materials:[...$('materials').querySelectorAll('input')].map(x=>x.value.trim()).filter(Boolean),photos:currentPhotos,created:Date.now()};await save(o);$('notice').textContent='Pedido salvo com sucesso!';$('editor').classList.add('hidden');$('home').classList.remove('hidden');await render()}catch(err){$('notice').textContent='Não foi possível salvar. O pedido pode exceder o espaço disponível no aparelho. Remova apenas a foto recém-adicionada e tente novamente; os demais pedidos não serão apagados.';console.error(err)}finally{$('saveBtn').disabled=false;$('saveBtn').textContent='Salvar pedido'}};
+$('exportBtn').onclick=async()=>{const data=await all();const payload=[];for(const o of data){payload.push({...o,photos:await Promise.all((o.photos||[]).map(blob=>new Promise(resolve=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.readAsDataURL(blob)})))})}const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(payload)],{type:'application/json'}));a.download='backup-aure-gestao.json';a.click();URL.revokeObjectURL(a.href)};
+$('importBtn').onclick=()=>$('importFile').click();$('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const arr=JSON.parse(await f.text());for(const o of arr){o.photos=(o.photos||[]).map(s=>{let [head,b64]=s.split(',');let mime=head.match(/:(.*?);/)[1];let bin=atob(b64),bytes=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)bytes[i]=bin.charCodeAt(i);return new Blob([bytes],{type:mime})});await save(o)}await render();alert('Backup importado.')}catch(err){alert('Não foi possível importar este backup.')}}; 
+(async()=>{try{await openDB();await render()}catch(e){document.body.innerHTML='<main><h2>Não foi possível abrir o armazenamento local.</h2><p>Abra no Safari atualizado, fora do navegador interno de outros aplicativos.</p></main>'}})();
+if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
 </script>
 </body></html>
