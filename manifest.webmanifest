@@ -1,0 +1,9 @@
+{
+  "name": "Aur.é Gestão",
+  "short_name": "Aur.é Gestão",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#fbf8f5",
+  "theme_color": "#45271d",
+  "icons": []
+}
