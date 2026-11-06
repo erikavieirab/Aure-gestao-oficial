@@ -28,6 +28,15 @@ hr{border:0;border-top:1px solid var(--line);margin:15px 0}
 #notice{font-size:13px;color:var(--green);margin:8px 0}.toolbar{display:flex;gap:8px}.toolbar input{flex:1}
 .photoPreview{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}.photoPreview img{width:90px;height:90px;object-fit:cover;border-radius:10px}
 .small{font-size:12px;color:var(--brown2)}
+.calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.calday{min-height:48px;border:1px solid var(--line);border-radius:9px;background:#fff;padding:6px 2px;color:var(--brown);font-size:12px}
+.calday.head{min-height:auto;background:transparent;border:0;font-weight:700;color:var(--brown2)}
+.calday.has{background:#efe4dc;border-color:#cbb6a8;font-weight:750}
+.calday.selected{outline:2px solid var(--brown);outline-offset:1px}
+.calday.today{box-shadow:inset 0 0 0 1px var(--green)}
+.calcount{display:block;font-size:9px;color:var(--green);margin-top:3px}
+.statusReady{background:#e4eee3;color:#34563a}
+
 @media(max-width:480px){.grid{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}main{padding:12px}}
 </style>
 </head>
@@ -43,6 +52,13 @@ hr{border:0;border-top:1px solid var(--line);margin:15px 0}
  </div>
  <div class="actions"><button id="newBtn">＋ Novo pedido</button><button class="secondary" id="pdfBtn">Relatório PDF</button><button class="secondary" id="exportBtn">Backup</button><button class="secondary" id="importBtn">Importar backup</button><input id="importFile" class="hidden" type="file" accept="application/json"></div>
  <div class="toolbar"><input id="search" placeholder="Buscar cliente ou produto"><select id="filter"><option value="all">Todos</option><option value="active">Em andamento</option><option value="done">Entregues</option></select></div>
+ 
+ <section class="panel" id="agendaPanel" style="margin-top:14px">
+  <div class="orderhead"><h2 style="margin:0">Agenda de entregas</h2><div class="actions" style="margin:0"><button type="button" class="secondary" id="prevMonth">‹</button><button type="button" class="secondary" id="nextMonth">›</button></div></div>
+  <div id="monthLabel" style="font-weight:700;text-align:center;margin:12px 0"></div>
+  <div id="calendar" class="calendar"></div>
+  <div class="small" id="agendaHint" style="margin-top:10px">Toque em um dia para ver os pedidos com entrega prevista.</div>
+ </section>
  <div id="orders"></div>
 </section>
 <section id="editor" class="panel hidden">
@@ -50,6 +66,7 @@ hr{border:0;border-top:1px solid var(--line);margin:15px 0}
  <form id="orderForm">
   <input type="hidden" id="orderId">
   <label>Cliente</label><input id="client" required placeholder="Nome do cliente">
+  <label>WhatsApp do cliente</label><input id="phone" type="tel" inputmode="tel" placeholder="DDD + número (ex.: 31999999999)">
   <label>Produto / pedido</label><input id="product" required placeholder="O que será produzido?">
   <div class="grid"><div><label>Quantidade</label><input id="qty" type="number" min="1" step="1" value="1" required></div><div><label>Valor unitário (R$)</label><input id="unit" type="number" min="0" step="0.01" value="0" required></div></div>
   <div class="total"><span>Total do pedido</span><span id="total">R$ 0,00</span></div>
@@ -71,7 +88,7 @@ hr{border:0;border-top:1px solid var(--line);margin:15px 0}
 </section>
 </main>
 <script>
-const DB='aure-gestao-db-v2', STORE='orders'; let db, currentPhotos=[], materialRows=[];
+const DB='aure-gestao-db-v2', STORE='orders'; let db, currentPhotos=[], materialRows=[], agendaDate=new Date(), selectedAgendaDay='';
 const $=id=>document.getElementById(id), money=n=>(Number(n)||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 function openDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DB,1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains(STORE))r.result.createObjectStore(STORE,{keyPath:'id'})};r.onsuccess=()=>{db=r.result;resolve()};r.onerror=()=>reject(r.error)})}
 function all(){return new Promise((res,rej)=>{const r=db.transaction(STORE).objectStore(STORE).getAll();r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
@@ -79,9 +96,12 @@ function save(o){return new Promise((res,rej)=>{const tx=db.transaction(STORE,'r
 function remove(id){return new Promise((res,rej)=>{const tx=db.transaction(STORE,'readwrite');tx.objectStore(STORE).delete(id);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})}
 function calc(){let t=(+$('qty').value||0)*(+$('unit').value||0);$('total').textContent=money(t);let rec=$('payment').value==='Total'?t:$('payment').value==='Parcial'?(+$('received').value||0):0; $('receivedWrap').classList.toggle('hidden',$('payment').value!=='Parcial');$('balance').textContent=money(Math.max(0,t-rec));}
 function materialInput(v=''){const d=document.createElement('div');d.className='grid';d.style.marginBottom='7px';d.innerHTML='<input placeholder="Material" value=""><button type="button" class="danger">Remover</button>';d.querySelector('input').value=v;d.querySelector('button').onclick=()=>d.remove();$('materials').append(d)}
-function showEditor(o){$('home').classList.add('hidden');$('editor').classList.remove('hidden');$('orderForm').reset();$('orderId').value=o?.id||'';$('formTitle').textContent=o?'Editar pedido':'Novo pedido';$('client').value=o?.client||'';$('product').value=o?.product||'';$('qty').value=o?.qty||1;$('unit').value=o?.unit||0;$('deadline').value=o?.deadline||'';$('delivery').value=o?.delivery||'Pendente';$('payment').value=o?.payment||'Não pago';$('received').value=o?.received||0;$('notes').value=o?.notes||'';currentPhotos=o?.photos||[];materialRows=o?.materials||[];$('materials').innerHTML='';materialRows.forEach(materialInput);$('photoPreview').innerHTML='';currentPhotos.forEach(p=>preview(p));calc();window.scrollTo(0,0)}
+function showEditor(o){$('home').classList.add('hidden');$('editor').classList.remove('hidden');$('orderForm').reset();$('orderId').value=o?.id||'';$('formTitle').textContent=o?'Editar pedido':'Novo pedido';$('client').value=o?.client||'';$('phone').value=o?.phone||'';$('product').value=o?.product||'';$('qty').value=o?.qty||1;$('unit').value=o?.unit||0;$('deadline').value=o?.deadline||'';$('delivery').value=o?.delivery||'Pendente';$('payment').value=o?.payment||'Não pago';$('received').value=o?.received||0;$('notes').value=o?.notes||'';currentPhotos=o?.photos||[];materialRows=o?.materials||[];$('materials').innerHTML='';materialRows.forEach(materialInput);$('photoPreview').innerHTML='';currentPhotos.forEach(p=>preview(p));calc();window.scrollTo(0,0)}
 function preview(blob){const u=URL.createObjectURL(blob);const img=document.createElement('img');img.src=u;$('photoPreview').append(img)}
-async function render(){const data=await all();let total=0,rec=0,bal=0,active=0;data.forEach(o=>{let t=o.qty*o.unit, r=o.payment==='Total'?t:o.payment==='Parcial'?o.received:0;total+=t;rec+=r;bal+=Math.max(0,t-r);if(o.delivery!=='Entregue')active++});$('activeCount').textContent=active;$('ordersTotal').textContent=money(total);$('receivedTotal').textContent=money(rec);$('toReceive').textContent=money(bal);let q=$('search').value.toLowerCase(),f=$('filter').value;$('orders').innerHTML='';data.filter(o=>(f==='all'||(f==='active'?o.delivery!=='Entregue':o.delivery==='Entregue'))&&(`${o.client} ${o.product}`).toLowerCase().includes(q)).sort((a,b)=>b.created-a.created).forEach(o=>{let t=o.qty*o.unit,r=o.payment==='Total'?t:o.payment==='Parcial'?o.received:0;let div=document.createElement('div');div.className='order';let title=document.createElement('div');title.className='orderhead';title.innerHTML=`<div><strong>${esc(o.client)}</strong><div class="muted">${esc(o.product)} · ${o.qty} un.</div></div><span class="pill">${esc(o.payment)}</span>`;div.append(title);let info=document.createElement('p');info.textContent=`Total ${money(t)} · Recebido ${money(r)} · Falta ${money(Math.max(0,t-r))}`;div.append(info);let meta=document.createElement('div');meta.className='muted';meta.textContent=`Prazo: ${o.deadline||'Não definido'} · ${o.delivery}`;div.append(meta);(o.photos||[]).slice(0,2).forEach(p=>{let im=document.createElement('img');im.src=URL.createObjectURL(p);div.append(im)});let acts=document.createElement('div');acts.className='actions';let edit=document.createElement('button');edit.textContent='Editar';edit.onclick=()=>showEditor(o);let del=document.createElement('button');del.textContent='Excluir';del.className='danger';del.onclick=async()=>{if(confirm('Excluir este pedido?')){await remove(o.id);render()}};acts.append(edit,del);div.append(acts);$('orders').append(div)})}
+async function render(){const data=await all();let total=0,rec=0,bal=0,active=0;data.forEach(o=>{let t=o.qty*o.unit, r=o.payment==='Total'?t:o.payment==='Parcial'?o.received:0;total+=t;rec+=r;bal+=Math.max(0,t-r);if(o.delivery!=='Entregue')active++});$('activeCount').textContent=active;$('ordersTotal').textContent=money(total);$('receivedTotal').textContent=money(rec);$('toReceive').textContent=money(bal);let q=$('search').value.toLowerCase(),f=$('filter').value;$('orders').innerHTML='';data.filter(o=>(f==='all'||(f==='active'?o.delivery!=='Entregue':o.delivery==='Entregue'))&&(`${o.client} ${o.product}`).toLowerCase().includes(q)).sort((a,b)=>b.created-a.created).forEach(o=>{let t=o.qty*o.unit,r=o.payment==='Total'?t:o.payment==='Parcial'?o.received:0;let div=document.createElement('div');div.className='order';let title=document.createElement('div');title.className='orderhead';title.innerHTML=`<div><strong>${esc(o.client)}</strong><div class="muted">${esc(o.product)} · ${o.qty} un.</div></div><span class="pill">${esc(o.payment)}</span>`;div.append(title);let info=document.createElement('p');info.textContent=`Total ${money(t)} · Recebido ${money(r)} · Falta ${money(Math.max(0,t-r))}`;div.append(info);let meta=document.createElement('div');meta.className='muted';meta.textContent=`Prazo: ${o.deadline||'Não definido'} · ${o.delivery}`;div.append(meta);(o.photos||[]).slice(0,2).forEach(p=>{let im=document.createElement('img');im.src=URL.createObjectURL(p);div.append(im)});let state=document.createElement('div');state.className='muted';state.style.marginTop='8px';state.textContent=o.ready?'Status: Pronto para enviar':'Status: Em produção';div.append(state);
+ let acts=document.createElement('div');acts.className='actions';let ready=document.createElement('button');ready.textContent=o.ready?'Voltar para produção':'Marcar como pronto';ready.className=o.ready?'secondary':'statusReady';ready.onclick=async()=>{o.ready=!o.ready;await save(o);render()};acts.append(ready);
+ if(o.ready){let wa=document.createElement('button');wa.textContent='Liberar mensagem no WhatsApp';wa.onclick=()=>{const phone=String(o.phone||'').replace(/\D/g,'');if(!phone){alert('Cadastre o WhatsApp deste cliente ao editar o pedido.');return;}const msg=`Olá, ${o.client}! ❤️ Seu pedido na Aur.é está prontinho e liberado! Podemos combinar a retirada ou entrega?`;window.open(`https://wa.me/55${phone.replace(/^55/,'')}?text=${encodeURIComponent(msg)}`,'_blank');};acts.append(wa);}
+ let edit=document.createElement('button');edit.textContent='Editar';edit.onclick=()=>showEditor(o);let del=document.createElement('button');del.textContent='Excluir';del.className='danger';del.onclick=async()=>{if(confirm('Excluir este pedido?')){await remove(o.id);render()}};acts.append(edit,del);div.append(acts);$('orders').append(div)});renderCalendar()}
 function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 ['qty','unit','received','payment'].forEach(id=>$(id).addEventListener('input',calc));$('payment').addEventListener('change',calc);
 $('newBtn').onclick=()=>showEditor();
@@ -93,7 +113,26 @@ $('allCard').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.p
 $('cancelBtn').onclick=()=>{$('editor').classList.add('hidden');$('home').classList.remove('hidden')};
 $('addMaterial').onclick=()=>materialInput();$('search').oninput=render;$('filter').onchange=render;
 $('photos').onchange=e=>{for(const f of e.target.files){if(f.type.startsWith('image/')){currentPhotos.push(f);preview(f)}}e.target.value=''};
-$('orderForm').onsubmit=async e=>{e.preventDefault();$('saveBtn').disabled=true;$('saveBtn').textContent='Salvando...';$('notice').textContent='';try{const id=$('orderId').value||crypto.randomUUID();const o={id,client:$('client').value.trim(),product:$('product').value.trim(),qty:+$('qty').value,unit:+$('unit').value,deadline:$('deadline').value,delivery:$('delivery').value,payment:$('payment').value,received:$('payment').value==='Parcial'?Math.min((+$('received').value||0), (+$('qty').value)*(+$('unit').value)):0,notes:$('notes').value,materials:[...$('materials').querySelectorAll('input')].map(x=>x.value.trim()).filter(Boolean),photos:currentPhotos,created:Date.now()};await save(o);$('notice').textContent='Pedido salvo com sucesso!';$('editor').classList.add('hidden');$('home').classList.remove('hidden');await render()}catch(err){$('notice').textContent='Não foi possível salvar. O pedido pode exceder o espaço disponível no aparelho. Remova apenas a foto recém-adicionada e tente novamente; os demais pedidos não serão apagados.';console.error(err)}finally{$('saveBtn').disabled=false;$('saveBtn').textContent='Salvar pedido'}};
+$('orderForm').onsubmit=async e=>{e.preventDefault();$('saveBtn').disabled=true;$('saveBtn').textContent='Salvando...';$('notice').textContent='';try{const id=$('orderId').value||crypto.randomUUID();const previous=(await all()).find(x=>x.id===id);const o={id,client:$('client').value.trim(),phone:$('phone').value.trim(),ready:previous?.ready||false,product:$('product').value.trim(),qty:+$('qty').value,unit:+$('unit').value,deadline:$('deadline').value,delivery:$('delivery').value,payment:$('payment').value,received:$('payment').value==='Parcial'?Math.min((+$('received').value||0), (+$('qty').value)*(+$('unit').value)):0,notes:$('notes').value,materials:[...$('materials').querySelectorAll('input')].map(x=>x.value.trim()).filter(Boolean),photos:currentPhotos,created:Date.now()};await save(o);$('notice').textContent='Pedido salvo com sucesso!';$('editor').classList.add('hidden');$('home').classList.remove('hidden');await render()}catch(err){$('notice').textContent='Não foi possível salvar. O pedido pode exceder o espaço disponível no aparelho. Remova apenas a foto recém-adicionada e tente novamente; os demais pedidos não serão apagados.';console.error(err)}finally{$('saveBtn').disabled=false;$('saveBtn').textContent='Salvar pedido'}};
+
+
+async function renderCalendar(){
+ const data=await all(), y=agendaDate.getFullYear(), m=agendaDate.getMonth();
+ $('monthLabel').textContent=agendaDate.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+ const first=new Date(y,m,1), start=(first.getDay()+6)%7, days=new Date(y,m+1,0).getDate();
+ const names=['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];let html=names.map(n=>`<div class="calday head">${n}</div>`).join('');
+ for(let i=0;i<start;i++)html+='<div></div>';
+ const counts={};data.filter(o=>o.deadline&&o.delivery!=='Entregue').forEach(o=>{counts[o.deadline]=(counts[o.deadline]||0)+1});
+ for(let d=1;d<=days;d++){
+  const key=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  const today=new Date(), isToday=key===`${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+  html+=`<button type="button" class="calday ${counts[key]?'has':''} ${selectedAgendaDay===key?'selected':''} ${isToday?'today':''}" data-day="${key}">${d}${counts[key]?`<span class="calcount">${counts[key]} pedido(s)</span>`:''}</button>`;
+ }
+ $('calendar').innerHTML=html;
+ $('calendar').querySelectorAll('[data-day]').forEach(b=>b.onclick=async()=>{selectedAgendaDay=b.dataset.day;await renderCalendar();const orders=data.filter(o=>o.deadline===selectedAgendaDay);$('agendaHint').textContent=orders.length?`Pedidos para ${new Date(selectedAgendaDay+'T12:00:00').toLocaleDateString('pt-BR')}: ${orders.map(o=>o.client+' — '+o.product).join(' | ')}`:`Nenhuma entrega prevista para ${new Date(selectedAgendaDay+'T12:00:00').toLocaleDateString('pt-BR')}.`;});
+}
+$('prevMonth').onclick=()=>{agendaDate.setMonth(agendaDate.getMonth()-1);renderCalendar()};
+$('nextMonth').onclick=()=>{agendaDate.setMonth(agendaDate.getMonth()+1);renderCalendar()};
 
 function reportPDF(){
  all().then(data=>{
